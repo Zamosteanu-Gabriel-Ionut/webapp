@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog App</title>
+</head>
+<body>
+    <h1>Post a New Blog</h1>
+    <form id="post-form" action="/create_post" method="POST" enctype="multipart/form-data">
+        <input type="text" name="user_name" placeholder="Your name" required>
+        <textarea name="text" placeholder="Write your post here..." required></textarea>
+        <input type="file" name="image">
+        <input type="text" name="avatar_url" placeholder="Avatar URL">
+        <button type="submit">Post</button>
+    </form>
+
+    <h2>Blog Feed</h2>
+    <div id="feed">
+        <!-- Render posts here -->
+    </div>
+
+    <script>
+        async function fetchPosts() {
+            const response = await fetch('/home');
+            const posts = await response.json();
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+            posts.forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.innerHTML = `
+                    <h3>${post.user_name}</h3>
+                    <p>${post.text}</p>
+                    <img src="${post.image_path}" alt="Blog Image" />
+                    <img src="${post.avatar_path}" alt="User Avatar" />
+                    <span>${new Date(post.date).toLocaleString()}</span>
+                `;
+                feed.appendChild(postDiv);
+            });
+        }
+
+        fetchPosts();
+    </script>
+</body>
+</html>
